@@ -1,0 +1,67 @@
+#!/bin/sh
+# Copyright (C) 2016 evenS
+
+install(){
+    tar xzvf aria2gee.tar.gz -C /
+    cp ./Aria2Gee.conf   /etc/aria2gee/Aria2Gee.conf
+    . ./Aria2Gee.conf
+
+    sed -i "s#xxxxxx#$pwd#g" /etc/aria2gee/aria2c.conf
+    mac=$(lua -e "print(require'tw'.get_mac())")
+    mac=${mac:6:8}
+    sed -i "s#FFFFFFFF#$mac#g" /etc/aria2gee/frp.ini
+    mkdir -p /tmp/data/AriaDowbload
+    chmod 777 /tmp/data/AriaDowbload
+    chmod 777 /tmp/data/AriaDowbload/*
+    touch /etc/config/samba
+    uci set samba.aria2gee=sambashare
+    uci set samba.aria2gee.name=aria2gee
+    uci set samba.aria2gee.read_only=no
+    uci set samba.aria2gee.create_mask=0777
+    uci set samba.aria2gee.dir_mask=0777
+    uci set samba.aria2gee.path="/tmp/data/AriaDowbload"
+    uci set samba.aria2gee.guest_ok=yes
+    uci commit samba
+    /etc/init.d/samba restart
+
+    rm /dev/null 
+    mknod /dev/null c 1 3 
+    chmod 666 /dev/null
+    
+    start
+}
+
+uninstall(){
+    stop
+    uci delete samba.aria2gee
+    uci commit samba
+    /etc/init.d/samba restart
+    rm -rf /tmp/cryptdata/usr/bin/aria2c /tmp/cryptdata/usr/bin/frpc /etc/aria2gee/ /etc/init.d/aria2gee.sh
+}
+
+status() {
+    . /etc/aria2gee/Aria2Gee.conf
+    if [ `pidof aria2c` ]; then
+        stat="running"
+    else
+        stat="stopped"
+    fi
+    mac=$(lua -e "print(require'tw'.get_mac())")
+    mac=${mac:6:8}
+    url="http://$mac.marixs.com:6800/jsonrpc||$pwd"
+    url=$(echo -n $url | /tmp/cryptdata/usr/bin/base64)
+    url="http://nemoalex.github.io/glutton/?s="$url
+    msg="Server:$mac.marixs.com<br>Port:6800<br>token:$pwd<br><a href=\\\"$url\\\" >新手直达链接</a><br><a href=\\\"http://ariang.mayswind.net/\\\">老司机推荐UI</a><br>下载目录：\\\\\\\hiwifi\\\aria2gee <br>极先锋测试版本反向代理服务器在国外，反应较慢望谅解。"
+    echo "{ \"status\" : \"$stat\", \"msg\" : \" $msg\"}"
+    return 0
+}
+
+start() {
+    /etc/init.d/aria2gee.sh enable
+    /etc/init.d/aria2gee.sh start
+}
+
+stop() {
+    /etc/init.d/aria2gee.sh disable
+    /etc/init.d/aria2gee.sh stop
+}
