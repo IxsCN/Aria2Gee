@@ -51,7 +51,8 @@ status() {
     url="http://$mac.marixs.com:6800/jsonrpc||$pwd"
     url=$(echo -n $url | /tmp/cryptdata/usr/bin/base64)
     url="http://nemoalex.github.io/glutton/?s="$url
-    msg="Server:$mac.marixs.com<br>Port:6800<br>token:$pwd<br><a href=\\\"$url\\\" >新手直达链接</a><br><a href=\\\"http://ariang.mayswind.net/\\\">老司机推荐UI</a><br>下载目录：\\\\\\\hiwifi\\\aria2gee <br>极先锋测试版本反向代理服务器在国外，反应较慢望谅解。"
+    rpcpath="http://token:$pwd@$mac.marixs.com:6800/jsonrpc"
+    msg="Server:$mac.marixs.com<br>Port:6800<br>token:$pwd<br>RPC path:$rpcpath<br><a href=\\\"$url\\\" >新手直达链接</a><br><a href=\\\"http://ariang.mayswind.net/\\\">老司机推荐UI</a><br>下载目录：\\\\\\\hiwifi\\\aria2gee<br><a href=\\\"https://stray.farbox.com/hiwifi/aria2geejiao-cheng\\\">高级教程</a>"
     echo "{ \"status\" : \"$stat\", \"msg\" : \" $msg\"}"
     return 0
 }
