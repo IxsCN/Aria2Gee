@@ -36,7 +36,7 @@ uninstall(){
     uci delete samba.aria2gee
     uci commit samba
     /etc/init.d/samba restart
-    rm -rf /tmp/cryptdata/usr/bin/aria2c /tmp/cryptdata/usr/bin/frpc /etc/aria2gee/ /etc/init.d/aria2gee.sh
+    rm -rf /tmp/cryptdata/usr/bin/aria2c /tmp/cryptdata/usr/bin/frpc /etc/aria2gee/ /etc/init.d/aria2gee.sh 
 }
 
 status() {
@@ -50,9 +50,28 @@ status() {
     mac=${mac:6:8}
     url="http://$mac.marixs.com:6800/jsonrpc||$pwd"
     url=$(echo -n $url | /tmp/cryptdata/usr/bin/base64)
-    url="http://nemoalex.github.io/glutton/?s="$url
+    url="http://aria2.me/glutton/?s="$url
     rpcpath="http://token:$pwd@$mac.marixs.com:6800/jsonrpc"
-    msg="Server:$mac.marixs.com<br>Port:6800<br>token:$pwd<br>RPC path:$rpcpath<br><a href=\\\"$url\\\" >新手直达链接</a><br><a href=\\\"http://ariang.mayswind.net/\\\">老司机推荐UI</a><br>下载目录：\\\\\\\hiwifi\\\aria2gee<br><a href=\\\"https://stray.farbox.com/hiwifi/aria2geejiao-cheng\\\">高级教程</a>"
+    frpstatus=$(cat /tmp/ariaStatus )
+    df -h | grep -E "sda|mmcblk" > /tmp/ariatmp
+    while read line
+    do
+        path=$(echo $line | awk 'NR==1{print $6}')
+        hardname=$(echo $path | awk -F '/' 'NR==1{print $4}')
+        if [ $(echo $path | grep sda -c ) == 1 ]; then 
+            kind="USB设备"
+            name=$(uci get samba.$hardname.name)
+        elif [ $(echo $path | grep mmcblk -c ) == 1 ]; then 
+            kind="内存卡"
+            name="无"
+        fi
+        use=$(echo $line | awk 'NR==1{print $5}')
+        size=$(echo $line | awk 'NR==1{print $2}')
+        storageinfo=$storageinfo"类型：$kind；名字：$name；总容量：$size；使用率：$use；路径：$path<br>"
+    done < /tmp/ariatmp
+    rm -rf /tmp/ariatmp
+
+    msg="↓↓Server↓↓<br>$mac.marixs.com<br>↓↓Port↓↓<br>6800<br>↓↓token↓↓<br>$pwd<br>↓↓RPC path↓↓<br>$rpcpath<br><br>↓↓内网穿透状态↓↓<br>$frpstatus<br>↓↓存储设备信息↓↓<br>$storageinfo<br><a href=\\\"$url\\\" >新手直达链接</a><br><a href=\\\"http://marixs.com/AriaNG/\\\">老司机推荐UI</a><br>下载目录：\\\\\\\hiwifi\\\<br><a href=\\\"https://stray.farbox.com/hiwifi/aria2geejiao-cheng\\\">高级教程</a>"
     echo "{ \"status\" : \"$stat\", \"msg\" : \" $msg\"}"
     return 0
 }
