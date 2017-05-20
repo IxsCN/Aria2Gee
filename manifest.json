@@ -11,6 +11,15 @@
                         "required": 1,
                         "description": "密码",
                         "regexpression": ""
+                },
+                {
+                        "name": "PATH",
+                        "type": "text",
+                        "variable": "path",
+                        "defaultvalue": "/tmp/data/AriaDownload/",
+                        "required": 1,
+                        "description": "默认下载路径",
+                        "regexpression": ""
                 }
         ]
 }
