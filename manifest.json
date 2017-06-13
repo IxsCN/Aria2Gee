@@ -16,7 +16,11 @@
                         "name": "PATH",
                         "type": "text",
                         "variable": "path",
+<<<<<<< HEAD
                         "defaultvalue": "/tmp/data/AriaDownload/",
+=======
+                        "defaultvalue": "/tmp/data/AriaDowbload/",
+>>>>>>> origin/master
                         "required": 1,
                         "description": "默认下载路径",
                         "regexpression": ""

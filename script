@@ -13,6 +13,10 @@ install(){
     sed -i "s#FFFFFFFF#$mac#g" /etc/aria2gee/frp.ini
     mkdir -p $path
     chmod 777 $path
+<<<<<<< HEAD
+=======
+    chmod 777 $path/*
+>>>>>>> origin/master
     touch /etc/config/samba
     uci set samba.aria2gee=sambashare
     uci set samba.aria2gee.name=aria2gee
@@ -52,10 +56,17 @@ status() {
     url=$(echo -n $url | /tmp/cryptdata/usr/bin/base64)
     url="http://nemoalex.github.io/glutton/?s="$url
     basepwd=$(echo -n $pwd | /tmp/cryptdata/usr/bin/base64)
+<<<<<<< HEAD
     ariangurl="http://aria2gee.com/#/settings/rpc/set/http/$mac.aria2gee.com/6800/jsonrpc/$basepwd"
     ariangurl1="http://ariang.mayswind.net/latest/#/settings/rpc/set/http/$mac.aria2gee.com/6800/jsonrpc/$basepwd"
     rpcpath="http://token:$pwd@$mac.aria2gee.com:6800/jsonrpc"
 
+=======
+    ariangurl="http://marixs.com/AriaNG/#/settings/rpc/set/http/$mac.marixs.com/6800/jsonrpc/$basepwd"
+    ariangurl1="http://ariang.mayswind.net/latest/#/settings/rpc/set/http/$mac.marixs.com/6800/jsonrpc/$basepwd"
+    rpcpath="http://token:$pwd@$mac.marixs.com:6800/jsonrpc"
+    frpstatus=$(cat /tmp/ariaStatus )
+>>>>>>> origin/master
     df -h | grep -E "sda|mmcblk" > /tmp/ariatmp
     while read line
     do
@@ -74,6 +85,7 @@ status() {
         storageinfo=$storageinfo"类型：$kind；名字：$name；总容量：$size；使用率：$use；路径：$linepath<br>"
     done < /tmp/ariatmp
     rm -rf /tmp/ariatmp
+<<<<<<< HEAD
 
     httpcode=$(curl -I -m 3 -o /dev/null -s -w %{http_code}  http://$mac.aria2gee.com:6800)
     if [ $httpcode == "404" ]; then
@@ -83,6 +95,9 @@ status() {
     fi
 
     msg="↓↓Server↓↓<br>$mac.aria2gee.com<br>↓↓Port↓↓<br>6800<br>↓↓token↓↓<br>$pwd<br>↓↓RPC path↓↓<br>$rpcpath<br>↓↓内网穿透状态（仅供参考）↓↓<br>$frpstatus <br>↓↓存储设备信息↓↓<br>$storageinfo↓↓默认下载位置↓↓<br>$currentpath<br><br><a href=\\\"$url\\\" >新手直达链接（app端不可用）</a><br><a href=\\\"$ariangurl1\\\">高级直达链接（app端可用）</a><br><a href=\\\"$ariangurl\\\">高级直达链接.备用（app端可用）</a><br>↓↓samba共享地址链接↓↓<br>\\\\\\\hiwifi\\\Aria2Gee\\\<br><a href=\\\"https://stray.farbox.com/hiwifi/aria2geejiao-cheng\\\">高级教程</a>"
+=======
+    msg="↓↓Server↓↓<br>$mac.marixs.com<br>↓↓Port↓↓<br>6800<br>↓↓token↓↓<br>$pwd<br>↓↓RPC path↓↓<br>$rpcpath<br><br>↓↓内网穿透状态（仅供参考）↓↓<br>$frpstatus <br>↓↓存储设备信息↓↓<br>$storageinfo↓↓默认下载位置↓↓<br>$currentpath<br><br><a href=\\\"$url\\\" >新手直达链接（app端不可用）</a><br><a href=\\\"$ariangurl1\\\">高级直达链接（app端可用）</a><br><a href=\\\"$ariangurl\\\">高级直达链接.备用（app端可用）</a><br>↓↓samba共享地址链接↓↓<br>\\\\\\\hiwifi\\\Aria2Gee\\\<br><a href=\\\"https://stray.farbox.com/hiwifi/aria2geejiao-cheng\\\">高级教程</a>"
+>>>>>>> origin/master
     echo "{ \"status\" : \"$stat\", \"msg\" : \" $msg\"}"
     return 0
 }
